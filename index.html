@@ -2,6 +2,13 @@
 <html lang="id">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Anoa's Uploader — Unggah ribuan foto ke FotoYu, secepat kilat">
+<meta property="og:description" content="Aplikasi unggah massal FotoYu untuk Windows & macOS. Kompres otomatis, tag FotoTree, anti-dobel.">
+<meta property="og:url" content="https://anoasportograph-ui.github.io/">
+<meta property="og:image" content="https://anoasportograph-ui.github.io/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <title>Anoa's Uploader — Unggah ribuan foto ke FotoYu, secepat kilat</title>
 <meta name="description" content="Aplikasi unggah massal FotoYu untuk PC & HP. Kompres otomatis, tag FotoTree, anti-dobel. Jauh lebih cepat dari aplikasi bawaan." />
 <style>
@@ -117,6 +124,8 @@
   .acc[open] summary::after { transform: rotate(180deg); }
   .acc[open] summary { border-bottom: 1px solid var(--line); }
   .acc .ins { padding: 16px 22px 20px; }
+  .faq-a { padding: 16px 22px 20px; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+  .faq-a b { color: var(--ink); }
 
   /* ── PRICING ── */
   .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 860px; margin: 0 auto; }
@@ -165,6 +174,7 @@
       <a href="#unduh">Unduh</a>
       <a href="#install">Cara Install</a>
       <a href="#harga">Harga</a>
+      <a href="#faq">FAQ</a>
       <a class="btn btn-primary" href="#harga">Mulai</a>
     </nav>
   </div>
@@ -305,6 +315,38 @@
       <div class="step"><div class="n">1</div><h3>Pilih paket &amp; chat WA</h3><p>Klik "Beli via WhatsApp", pilih paket, lalu bayar (transfer / e-wallet).</p></div>
       <div class="step"><div class="n">2</div><h3>Kirim Device ID</h3><p>Buka aplikasi → menu Lisensi → salin Device ID, kirim ke kami.</p></div>
       <div class="step"><div class="n">3</div><h3>Terima kunci → aktif</h3><p>Kami kirim kunci lisensi. Tempel di aplikasi → langsung aktif.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">FAQ</p>
+      <h2>Pertanyaan yang sering ditanya</h2>
+    </div>
+    <div class="acc-wrap">
+      <details class="acc"><summary>Apa bedanya dengan aplikasi bawaan FotoYu?</summary><div class="faq-a">Anoa's Uploader mengompres &amp; mengunggah banyak foto sekaligus (paralel), memasang FotoTree/lokasi otomatis, melewati foto yang sudah pernah diunggah (anti-dobel), dan bisa dibagi per sesi untuk batch besar. Hasilnya jauh lebih cepat &amp; hemat tenaga.</div></details>
+      <details class="acc"><summary>Satu lisensi untuk berapa perangkat?</summary><div class="faq-a">Satu lisensi berlaku untuk <b>satu perangkat</b> (Windows atau Mac). Mau pindah perangkat? Chat kami.</div></details>
+      <details class="acc"><summary>Bagaimana cara mendapatkan kunci lisensinya?</summary><div class="faq-a">Chat WhatsApp → pilih paket → bayar → buka aplikasi &amp; kirim <b>Device ID</b> → kami kirim kunci → tempel di aplikasi, langsung aktif.</div></details>
+      <details class="acc"><summary>Apakah aman?</summary><div class="faq-a">Aman. Aplikasi hanya membantu proses unggah ke <b>akun FotoYu milikmu sendiri</b> — tidak menyimpan data pribadi atau kata sandi di server kami.</div></details>
+      <details class="acc"><summary>Kenapa muncul peringatan "aplikasi tidak dikenal / rusak" saat install?</summary><div class="faq-a">Wajar—aplikasi di luar App Store / Microsoft Store belum ditandatangani resmi. Ikuti panduan di bagian <a href="#install" style="color:var(--violet);font-weight:700">Cara Install</a>. Aman dijalankan.</div></details>
+      <details class="acc"><summary>Bisa coba dulu sebelum beli?</summary><div class="faq-a">Aplikasinya bisa diunduh gratis. Untuk mulai mengunggah dibutuhkan lisensi aktif—ingin mencoba dulu? <a href="https://wa.me/6285825447704?text=Halo%2C%20saya%20ingin%20coba%20Anoa%27s%20Uploader" style="color:var(--violet);font-weight:700">Chat WhatsApp</a>.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- TENTANG -->
+<section id="tentang">
+  <div class="wrap" style="max-width:720px; text-align:center;">
+    <p class="eyebrow" style="color:var(--violet)">Tentang</p>
+    <h2 style="font-size:clamp(24px,4vw,34px); font-weight:820; margin-top:12px;">Dari fotografer, untuk fotografer</h2>
+    <p style="color:var(--muted); font-size:16px; margin-top:16px; line-height:1.7;">
+      Anoa's Uploader lahir dari kebutuhan nyata di lapangan—lelah menunggu berjam-jam saat mengunggah hasil satu event ke FotoYu. Kami buat alat yang <b style="color:var(--ink)">cepat, tahan-banting, dan gampang dipakai</b>, lalu kami bagikan untuk sesama fotografer FotoYu.
+    </p>
+    <div style="margin-top:22px;">
+      <a class="btn btn-wa" href="https://wa.me/6285825447704?text=Halo%2C%20saya%20mau%20tanya%20Anoa%27s%20Uploader">💬 Hubungi via WhatsApp</a>
     </div>
   </div>
 </section>
