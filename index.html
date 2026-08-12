@@ -126,6 +126,14 @@
   .acc .ins { padding: 16px 22px 20px; }
   .faq-a { padding: 16px 22px 20px; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
   .faq-a b { color: var(--ink); }
+  .shots-hero { max-width: 900px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 26px 60px -30px rgba(20,18,46,0.55); }
+  .shots-hero img { width: 100%; display: block; }
+  .shot-cap { text-align: center; color: var(--muted); font-size: 14px; margin: 16px auto 0; max-width: 620px; }
+  .shots-two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 900px; margin: 36px auto 0; }
+  @media (max-width: 700px) { .shots-two { grid-template-columns: 1fr; } }
+  .shots-two figure { margin: 0; }
+  .shots-two img { width: 100%; display: block; border-radius: 14px; border: 1px solid var(--line); }
+  .shots-two figcaption { color: var(--muted); font-size: 13px; text-align: center; margin-top: 10px; }
 
   /* ── PRICING ── */
   .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 860px; margin: 0 auto; }
@@ -214,6 +222,23 @@
       <div class="card"><div class="ico">🚫</div><h3>Anti-dobel</h3><p>Foto yang sudah pernah diunggah otomatis dilewati. Aman diulang tanpa takut dobel.</p></div>
       <div class="card"><div class="ico">🔀</div><h3>Bagi per sesi</h3><p>Batch 40rb? Pecah jadi beberapa sesi (ganjil/genap) dan cicil kapan saja.</p></div>
       <div class="card"><div class="ico">🛡️</div><h3>Tahan-banting</h3><p>Jaringan putus? Lanjut otomatis dari titik terakhir—tak mulai dari nol.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TAMPILAN APLIKASI -->
+<section id="tampilan">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Tampilan Aplikasi</p>
+      <h2>Sederhana, jelas, cepat</h2>
+      <p>Isi metadata sekali, lalu biarkan aplikasi bekerja—pantau langsung sampai selesai.</p>
+    </div>
+    <div class="shots-hero"><img src="shots/shot-selesai.jpg" alt="Layar selesai: ribuan foto terunggah, 0 gagal" loading="lazy"></div>
+    <p class="shot-cap"><b style="color:var(--ink)">3.148 foto</b> terunggah dalam satu sesi — 0 duplikat, 0 gagal, ±522 foto/menit.</p>
+    <div class="shots-two">
+      <figure><img src="shots/shot-foto.jpg" alt="Layar unggah foto" loading="lazy"><figcaption>Pilih folder, isi harga &amp; FotoTree, lalu Mulai Unggah.</figcaption></figure>
+      <figure><img src="shots/shot-video.jpg" alt="Layar unggah foto &amp; video" loading="lazy"><figcaption>Foto &amp; video sekaligus, metadata terpisah.</figcaption></figure>
     </div>
   </div>
 </section>
