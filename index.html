@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="id">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anoa's Uploader — Unggah ribuan foto ke FotoYu, secepat kilat</title>
+<meta name="description" content="Aplikasi unggah massal FotoYu untuk PC & HP. Kompres otomatis, tag FotoTree, anti-dobel. Jauh lebih cepat dari aplikasi bawaan." />
+<style>
+  :root {
+    --violet: #5145e0; --violet-2: #8b6cff; --violet-deep: #2a2380;
+    --bg: #f6f6fb; --surface: #ffffff; --surface-2: #f0f0f8;
+    --ink: #16162a; --muted: #5c5c78; --line: #e6e6f0;
+    --ok: #12a150;
+    --hero-1: #14122e; --hero-2: #241a5e; --hero-3: #4a2fa0;
+    --radius: 16px;
+    --maxw: 1120px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0b12; --surface: #12131f; --surface-2: #191a29;
+      --ink: #ecedf7; --muted: #9a9bb8; --line: #24263a;
+      --violet: #8b7bff; --violet-2: #a996ff;
+    }
+  }
+  :root[data-theme="light"] { --bg:#f6f6fb; --surface:#fff; --surface-2:#f0f0f8; --ink:#16162a; --muted:#5c5c78; --line:#e6e6f0; --violet:#5145e0; --violet-2:#8b6cff; }
+  :root[data-theme="dark"] { --bg:#0a0b12; --surface:#12131f; --surface-2:#191a29; --ink:#ecedf7; --muted:#9a9bb8; --line:#24263a; --violet:#8b7bff; --violet-2:#a996ff; }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
+  h1, h2, h3 { line-height: 1.12; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  .eyebrow { font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+
+  /* ── NAV ── */
+  header.nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent); border-bottom: 1px solid var(--line); }
+  .nav-in { display: flex; align-items: center; gap: 18px; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: -0.01em; }
+  .mark { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--violet-2), var(--violet)); display: grid; place-items: center; flex: none; }
+  .nav-links { margin-left: auto; display: flex; align-items: center; gap: 26px; }
+  .nav-links a { color: var(--muted); font-size: 14.5px; font-weight: 600; }
+  .nav-links a:hover { color: var(--ink); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14.5px;
+    padding: 10px 18px; border-radius: 11px; cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, filter .12s ease; }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: linear-gradient(135deg, var(--violet-2), var(--violet)); color: #fff; box-shadow: 0 8px 22px -8px var(--violet); }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+  .btn-wa { background: #1fab54; color: #fff; }
+  .nav .btn { padding: 9px 15px; }
+  @media (max-width: 720px) { .nav-links a:not(.btn) { display: none; } }
+
+  /* ── HERO ── */
+  .hero { position: relative; overflow: hidden; color: #fff;
+    background: radial-gradient(120% 90% at 80% -10%, var(--hero-3) 0%, transparent 55%), linear-gradient(160deg, var(--hero-1), var(--hero-2)); }
+  .hero .wrap { position: relative; z-index: 2; padding: 92px 22px 104px; text-align: center; }
+  .hero .eyebrow { color: #b9a9ff; }
+  .hero h1 { font-size: clamp(32px, 6.4vw, 62px); font-weight: 850; margin: 16px auto 0; max-width: 16ch; }
+  .hero h1 .grad { background: linear-gradient(120deg, #c9bcff, #8b6cff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub { font-size: clamp(15px, 2vw, 19px); color: #cfc9ee; max-width: 60ch; margin: 20px auto 0; }
+  .hero .cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .hero .cta .btn-ghost { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); color: #fff; }
+  .stat-row { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-top: 46px; }
+  .stat { text-align: center; }
+  .stat b { display: block; font-size: 26px; font-weight: 850; letter-spacing: -0.02em; }
+  .stat span { font-size: 12.5px; color: #b6b0d8; font-weight: 600; }
+  /* aliran panah naik (ambient) */
+  .flow { position: absolute; inset: 0; z-index: 1; overflow: hidden; opacity: .5; }
+  .flow i { position: absolute; bottom: -40px; color: rgba(160,140,255,.35); animation: rise linear infinite; }
+  @keyframes rise { to { transform: translateY(-115vh); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .flow { display: none; } }
+
+  /* ── SECTIONS ── */
+  section { padding: 82px 0; }
+  .sec-head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+  .sec-head .eyebrow { color: var(--violet); }
+  .sec-head h2 { font-size: clamp(26px, 4vw, 40px); font-weight: 820; margin-top: 12px; }
+  .sec-head p { color: var(--muted); font-size: 16px; margin-top: 12px; }
+
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+  .card .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 22px;
+    background: color-mix(in srgb, var(--violet) 12%, transparent); margin-bottom: 16px; }
+  .card h3 { font-size: 17.5px; font-weight: 750; }
+  .card p { color: var(--muted); font-size: 14.5px; margin: 8px 0 0; }
+
+  /* ── PLATFORM ── */
+  .platforms { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px) { .platforms { grid-template-columns: 1fr; } }
+  .plat { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 30px; }
+  .plat .tag { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--violet); }
+  .plat h3 { font-size: 22px; font-weight: 800; margin-top: 8px; }
+  .plat p { color: var(--muted); font-size: 14.5px; margin: 10px 0 20px; }
+  .dl-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 560px) { .dl-row { grid-template-columns: 1fr; } }
+  .dl { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 14px; border-radius: 11px;
+    border: 1px solid var(--line); background: var(--surface-2); font-size: 13.5px; font-weight: 700; }
+  .dl:hover { border-color: var(--violet); }
+  .ins { margin: 4px 0 0; padding-left: 20px; color: var(--muted); font-size: 14px; }
+  .ins li { margin-bottom: 10px; line-height: 1.55; }
+  .ins b { color: var(--ink); }
+  code { background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px;
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; display: inline-block; margin: 4px 0; word-break: break-all; }
+  .note-safe { text-align: center; color: var(--muted); font-size: 13px; margin-top: 22px; max-width: 620px; margin-left: auto; margin-right: auto; }
+  .acc-wrap { max-width: 720px; margin: 0 auto; display: grid; gap: 12px; }
+  .acc { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .acc summary { list-style: none; cursor: pointer; padding: 18px 22px; font-weight: 750; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+  .acc summary::-webkit-details-marker { display: none; }
+  .acc summary::after { content: "⌄"; margin-left: auto; font-size: 22px; line-height: 1; color: var(--muted); transition: transform .2s ease; }
+  .acc[open] summary::after { transform: rotate(180deg); }
+  .acc[open] summary { border-bottom: 1px solid var(--line); }
+  .acc .ins { padding: 16px 22px 20px; }
+
+  /* ── PRICING ── */
+  .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 860px; margin: 0 auto; }
+  @media (max-width: 760px) { .price-grid { grid-template-columns: 1fr; } }
+  .price { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 22px; text-align: center; position: relative; }
+  .price.pop { border-color: var(--violet); box-shadow: 0 16px 40px -18px var(--violet); }
+  .price .badge { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--violet-2), var(--violet)); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 999px; letter-spacing: .04em; }
+  .price .name { font-weight: 800; font-size: 16px; }
+  .price .amt { font-size: 30px; font-weight: 850; letter-spacing: -0.02em; margin: 10px 0 2px; }
+  .price .amt small { font-size: 14px; color: var(--muted); font-weight: 600; }
+  .price .note { font-size: 12.5px; color: var(--muted); min-height: 32px; }
+  .price .btn { width: 100%; justify-content: center; margin-top: 14px; }
+
+  /* ── STEPS ── */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: s; }
+  @media (max-width: 720px) { .steps { grid-template-columns: 1fr; } }
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .step .n { width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--violet) 14%, transparent); color: var(--violet); font-weight: 850; display: grid; place-items: center; margin-bottom: 14px; }
+  .step h3 { font-size: 16.5px; font-weight: 750; }
+  .step p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+  /* ── CTA band ── */
+  .band { background: linear-gradient(160deg, var(--hero-1), var(--hero-2)); color: #fff; border-radius: 22px; padding: 54px 30px; text-align: center; }
+  .band h2 { font-size: clamp(24px, 4vw, 36px); font-weight: 820; }
+  .band p { color: #cfc9ee; margin: 12px auto 0; max-width: 52ch; }
+  .band .cta { margin-top: 26px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--muted); font-size: 13.5px; }
+  .foot-in { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .foot-in .brand { color: var(--ink); }
+  .foot-in .sp { margin-left: auto; }
+  .ph { border-bottom: 2px dotted var(--violet); }
+</style>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top">
+      <span class="mark">
+        <svg width="20" height="20" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 24 L68 44 H58 V62 H42 V44 H32 Z" fill="#fff"/><path d="M36 70 H64" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".85"/></svg>
+      </span>
+      Anoa's Uploader
+    </a>
+    <nav class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#unduh">Unduh</a>
+      <a href="#install">Cara Install</a>
+      <a href="#harga">Harga</a>
+      <a class="btn btn-primary" href="#harga">Mulai</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="flow" id="flow" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">Untuk Fotografer FotoYu</p>
+    <h1>Unggah ribuan foto ke FotoYu, <span class="grad">secepat kilat.</span></h1>
+    <p class="sub">Aplikasi unggah massal untuk <b>Windows &amp; macOS</b>. Kompres otomatis, tag FotoTree &amp; lokasi, anti-dobel — selesai berkali-kali lipat lebih cepat daripada aplikasi bawaan.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#unduh">↓ Unduh</a>
+      <a class="btn btn-ghost" href="#harga">Lihat Harga</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b>10.000+</b><span>foto per sesi</span></div>
+      <div class="stat"><b>Windows &amp; macOS</b><span>Intel &amp; Apple Silicon</span></div>
+      <div class="stat"><b>Anti-dobel</b><span>lewati yang sudah naik</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section id="fitur">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Kenapa Anoa's Uploader</p>
+      <h2>Dirancang untuk unggahan skala besar</h2>
+      <p>Semua yang kamu butuhkan untuk mengunggah hasil satu event—tanpa nunggu berjam-jam.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="ico">⚡</div><h3>Ngebut &amp; paralel</h3><p>Kompres dan unggah banyak foto sekaligus. Mode Hemat &amp; MAX sesuai kekuatan perangkat.</p></div>
+      <div class="card"><div class="ico">💻</div><h3>Windows &amp; macOS</h3><p>Satu lisensi jalan di Windows maupun Mac (Intel &amp; Apple Silicon). Instal cepat, langsung pakai.</p></div>
+      <div class="card"><div class="ico">🌳</div><h3>FotoTree &amp; Lokasi</h3><p>Cari &amp; pasang FotoTree, koordinat, harga, dan deskripsi—tersimpan untuk sesi berikutnya.</p></div>
+      <div class="card"><div class="ico">🚫</div><h3>Anti-dobel</h3><p>Foto yang sudah pernah diunggah otomatis dilewati. Aman diulang tanpa takut dobel.</p></div>
+      <div class="card"><div class="ico">🔀</div><h3>Bagi per sesi</h3><p>Batch 40rb? Pecah jadi beberapa sesi (ganjil/genap) dan cicil kapan saja.</p></div>
+      <div class="card"><div class="ico">🛡️</div><h3>Tahan-banting</h3><p>Jaringan putus? Lanjut otomatis dari titik terakhir—tak mulai dari nol.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM / UNDUH -->
+<section id="unduh" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Unduh</p>
+      <h2>Pilih perangkatmu</h2>
+      <p>Pilih perangkatmu, lalu aktifkan lisensi kapan saja.</p>
+    </div>
+    <div style="max-width:640px; margin:0 auto;">
+      <div class="plat">
+        <span class="tag">Desktop</span>
+        <h3>Windows &amp; macOS</h3>
+        <p>Unduh installer sesuai perangkatmu, lalu aktifkan lisensi kapan saja.</p>
+        <div class="dl-row">
+          <a class="dl" href="https://github.com/anoasportograph-ui/anoas-uploader-releases/releases/download/v4.2.0/Fast-Assistant-Uploader-4.2.0-setup.exe">🪟 Windows</a>
+          <a class="dl" href="https://github.com/anoasportograph-ui/anoas-uploader-releases/releases/download/v4.2.0/Assistant-Uploader-4.2.0-Mac-Silicon.dmg">🍎 Mac Silicon</a>
+          <a class="dl" href="https://github.com/anoasportograph-ui/anoas-uploader-releases/releases/download/v4.2.0/Assistant-Uploader-4.2.0-Mac-Intel.dmg">🍎 Mac Intel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARA INSTALL -->
+<section id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Cara Install</p>
+      <h2>Pasang dalam beberapa langkah</h2>
+      <p>Muncul peringatan keamanan saat pertama membuka? Wajar—aplikasi di luar App Store / Microsoft Store. Ikuti langkah di bawah.</p>
+    </div>
+    <div class="acc-wrap">
+      <details class="acc">
+        <summary>🍎 Cara install di Mac (Silicon &amp; Intel)</summary>
+        <ol class="ins">
+          <li>Buka file <b>.dmg</b>, lalu seret aplikasi ke folder <b>Applications</b>.</li>
+          <li>Buka pertama kali: <b>klik-kanan</b> ikon app → <b>Open</b> → klik <b>Open</b> sekali lagi. <span style="opacity:.8">(cukup sekali)</span></li>
+          <li>Jika muncul <i>“…is damaged”</i>: buka <b>Terminal</b>, tempel baris ini lalu Enter, kemudian buka lagi (klik-kanan → Open):<br><code>xattr -cr "/Applications/Fast Assistant Uploader.app"</code></li>
+        </ol>
+      </details>
+      <details class="acc">
+        <summary>🪟 Cara install di Windows 10 / 11</summary>
+        <ol class="ins">
+          <li>Klik dua kali file <b>setup.exe</b>.</li>
+          <li>Jika muncul <i>“Windows protected your PC”</i>: klik <b>More info</b> → <b>Run anyway</b>.</li>
+          <li>Ikuti proses pemasangan sampai selesai, lalu buka aplikasinya.</li>
+        </ol>
+      </details>
+    </div>
+    <p class="note-safe">🔒 Peringatan itu muncul karena aplikasi belum ditandatangani resmi—<b>aman dijalankan</b>. Butuh bantuan? <a href="https://wa.me/6285825447704?text=Halo%2C%20saya%20butuh%20bantuan%20install%20Anoa%27s%20Uploader" style="color:var(--violet); font-weight:700">chat WhatsApp</a>.</p>
+  </div>
+</section>
+
+<!-- HARGA -->
+<section id="harga" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Harga</p>
+      <h2>Bayar sesuai kebutuhan</h2>
+      <p>Satu lisensi untuk satu perangkat. Butuh harian saat event, atau selamanya untuk sehari-hari.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price">
+        <div class="name">Mingguan</div>
+        <div class="amt">Rp 350<small>rb /minggu</small></div>
+        <div class="note">Pas untuk rangkaian event sepekan.</div>
+        <a class="btn btn-wa" href="https://wa.me/6285825447704?text=Halo%2C%20saya%20mau%20beli%20Anoa%27s%20Uploader%20paket%20Mingguan%20%28Rp%20350.000%29">Beli via WhatsApp</a>
+      </div>
+      <div class="price pop">
+        <div class="badge">Terpopuler</div>
+        <div class="name">Bulanan</div>
+        <div class="amt">Rp 1<small>jt /bulan</small></div>
+        <div class="note">Untuk fotografer aktif tiap pekan.</div>
+        <a class="btn btn-primary" href="https://wa.me/6285825447704?text=Halo%2C%20saya%20mau%20beli%20Anoa%27s%20Uploader%20paket%20Bulanan%20%28Rp%201.000.000%29">Beli via WhatsApp</a>
+      </div>
+      <div class="price">
+        <div class="name">Selamanya</div>
+        <div class="amt">Rp 5<small>jt sekali</small></div>
+        <div class="note">Bayar sekali, pakai selamanya.</div>
+        <a class="btn btn-wa" href="https://wa.me/6285825447704?text=Halo%2C%20saya%20mau%20beli%20Anoa%27s%20Uploader%20paket%20Selamanya%20%28Rp%205.000.000%29">Beli via WhatsApp</a>
+      </div>
+    </div>
+    <p style="text-align:center; color:var(--muted); font-size:13px; margin-top:18px;">* Satu lisensi untuk satu perangkat (Windows atau Mac).</p>
+  </div>
+</section>
+
+<!-- CARA BELI -->
+<section id="beli">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Cara Beli</p>
+      <h2>Aktif dalam 3 langkah</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Pilih paket &amp; chat WA</h3><p>Klik "Beli via WhatsApp", pilih paket, lalu bayar (transfer / e-wallet).</p></div>
+      <div class="step"><div class="n">2</div><h3>Kirim Device ID</h3><p>Buka aplikasi → menu Lisensi → salin Device ID, kirim ke kami.</p></div>
+      <div class="step"><div class="n">3</div><h3>Terima kunci → aktif</h3><p>Kami kirim kunci lisensi. Tempel di aplikasi → langsung aktif.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section>
+  <div class="wrap">
+    <div class="band">
+      <h2>Siap unggah lebih cepat?</h2>
+      <p>Unduh sekarang, lalu aktifkan lisensi kapan kamu siap.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#unduh">↓ Unduh</a>
+        <a class="btn btn-wa" href="https://wa.me/6285825447704?text=Halo%2C%20saya%20mau%20tanya%20Anoa%27s%20Uploader">💬 Chat WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <span class="brand"><span class="mark" style="width:26px;height:26px;border-radius:7px"><svg width="15" height="15" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 24 L68 44 H58 V62 H42 V44 H32 Z" fill="#fff"/><path d="M36 70 H64" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".85"/></svg></span> Anoa's Uploader</span>
+    <span class="sp">© 2026 Anoa's Uploader · Alat bantu unggah untuk fotografer FotoYu</span>
+  </div>
+</footer>
+
+<script>
+  // Aliran panah naik di hero (ambient, ringan)
+  (function () {
+    var f = document.getElementById('flow');
+    if (!f || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var svg = '<svg width="18" height="18" viewBox="0 0 100 100"><path d="M50 24 L68 44 H58 V62 H42 V44 H32 Z" fill="currentColor"/></svg>';
+    for (var i = 0; i < 14; i++) {
+      var s = document.createElement('i');
+      s.innerHTML = svg;
+      var sz = 10 + Math.random() * 26;
+      s.style.left = Math.random() * 100 + '%';
+      s.style.width = sz + 'px'; s.style.height = sz + 'px';
+      s.style.animationDuration = (7 + Math.random() * 9) + 's';
+      s.style.animationDelay = (-Math.random() * 12) + 's';
+      f.appendChild(s);
+    }
+  })();
+</script>
+</html>
