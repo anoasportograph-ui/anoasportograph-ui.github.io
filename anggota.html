@@ -1,0 +1,67 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Area Anggota — Anoa's Uploader</title>
+<link rel="stylesheet" href="portal.css">
+</head><body>
+<header><div class="bar"><a class="brand" data-logo href="index.html"></a><span class="sp"></span>
+  <span class="userchip"><span id="uname">…</span><span class="av" id="uav">A</span></span>
+  <a id="logout" style="margin-left:14px;font-size:13px;color:var(--muted);font-weight:600">Keluar</a></div></header>
+
+<main id="main" style="opacity:0;transition:opacity .2s">
+  <div class="greet"><h1 id="hi">Halo 👋</h1><span class="badge">✓ Email terverifikasi</span></div>
+  <p class="subm">Unduh aplikasi, lalu aktifkan dengan kode OTP ke email Anda.</p>
+
+  <div class="grid2">
+    <div>
+      <div class="mcard" style="margin-bottom:18px">
+        <h2>⬇️ Unduh aplikasi</h2>
+        <div class="dl"><div class="os">🍎</div><div class="info"><b>macOS · Apple Silicon</b><span>Anoas-Uploader-4.2.0.dmg · 204 MB</span></div><a class="get" href="https://github.com/anoasportograph-ui/anoas-uploader-releases/releases/download/v4.2.0/Anoas-Uploader-4.2.0-Mac-Silicon.dmg">Unduh</a></div>
+        <div class="dl"><div class="os">🍎</div><div class="info"><b>macOS · Intel</b><span>Anoas-Uploader-4.2.0.dmg · 208 MB</span></div><a class="get" href="https://github.com/anoasportograph-ui/anoas-uploader-releases/releases/download/v4.2.0/Anoas-Uploader-4.2.0-Mac-Intel.dmg">Unduh</a></div>
+        <div class="dl"><div class="os">🪟</div><div class="info"><b>Windows</b><span>Anoas-Uploader-4.2.0-setup.exe · 173 MB</span></div><a class="get" href="https://github.com/anoasportograph-ui/anoas-uploader-releases/releases/download/v4.2.0/Anoas-Uploader-4.2.0-setup.exe">Unduh</a></div>
+        <p class="note" style="text-align:left;margin-top:12px">Setelah install, buka aplikasi dan masukkan email <b id="dlemail"></b> untuk menerima kode OTP.</p>
+      </div>
+      <div class="mcard">
+        <h2>🚀 Cara aktivasi</h2>
+        <div class="steps">
+          <div class="step done"><div class="n">✓</div><div class="tx"><b>Daftar akun</b><span>Selesai</span></div></div>
+          <div class="step done"><div class="n">✓</div><div class="tx"><b>Verifikasi email</b><span>Selesai</span></div></div>
+          <div class="step now"><div class="n">3</div><div class="tx"><b>Unduh &amp; install</b><span>Pilih installer di atas → pasang.</span></div></div>
+          <div class="step"><div class="n">4</div><div class="tx"><b>Buka app → masukkan email terdaftar</b><span>App kirim kode OTP ke email Anda → masukkan → aktif.</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="plan">
+        <div class="lab">Lisensi</div><div class="big">Belum aktif</div>
+        <div style="font-size:12.5px;opacity:.9">Beli lisensi untuk mulai mengunggah.</div>
+        <a class="buy" id="buy" target="_blank">💬 Beli via WhatsApp</a>
+      </div>
+      <div class="mcard">
+        <h2>👤 Profil</h2>
+        <div class="kv"><b>Nama</b><span id="pn">—</span></div>
+        <div class="kv"><b>Email</b><span id="pe">—</span></div>
+        <div class="kv"><b>Status akun</b><span style="color:var(--ok);font-weight:700">Aktif</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="portal.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id)
+  $('logout').addEventListener('click', () => { clearToken(); location.replace('index.html') })
+  ;(async () => {
+    if (!getToken()) return location.replace('masuk.html')
+    const r = await api('/api/me', { auth: true })
+    if (!r.ok) { clearToken(); return location.replace('masuk.html') }
+    const u = r.data.user
+    const first = (u.name || '').split(' ')[0] || 'Anggota'
+    $('hi').textContent = 'Halo, ' + first + ' 👋'
+    $('uname').textContent = u.name; $('uav').textContent = (u.name || 'A')[0]
+    $('pn').textContent = u.name; $('pe').textContent = u.email; $('dlemail').textContent = u.email
+    $('buy').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Halo, saya ' + u.name + ' (' + u.email + ') ingin membeli lisensi Anoa\'s Uploader.')
+    $('main').style.opacity = '1'
+  })()
+</script>
+</body></html>

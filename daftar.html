@@ -1,0 +1,65 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Daftar — Anoa's Uploader</title>
+<link rel="stylesheet" href="portal.css">
+</head><body>
+<header><div class="bar"><a class="brand" data-logo href="index.html"></a><span class="sp"></span>
+  <a href="masuk.html" style="font-size:13.5px;font-weight:600;color:var(--muted)">Masuk</a></div></header>
+
+<div class="authwrap">
+  <div class="card">
+    <h1>Buat akun</h1>
+    <p class="sub">Daftar untuk mengunduh &amp; mengaktifkan Anoa's Uploader.</p>
+    <div id="msg" class="msg"></div>
+    <div id="form">
+      <div class="field"><label>Nama lengkap</label><input id="nama" placeholder="Nama Anda" autocomplete="name"></div>
+      <div class="field"><label>Email</label><input id="email" type="email" placeholder="email@contoh.com" autocomplete="email"></div>
+      <div class="row2">
+        <div class="field"><label>Password</label><input id="pass" type="password" placeholder="Min. 8 karakter" autocomplete="new-password">
+          <div class="meter"><i id="meter"></i></div></div>
+        <div class="field"><label>Ulangi password</label><input id="pass2" type="password" placeholder="Ketik ulang" autocomplete="new-password"></div>
+      </div>
+      <button class="btn" id="btn">Daftar</button>
+      <p class="alt">Sudah punya akun? <a href="masuk.html">Masuk</a></p>
+    </div>
+  </div>
+  <p class="note">Data Anda disimpan aman (password ter-enkripsi). Email wajib diverifikasi sebelum bisa mengunduh.</p>
+</div>
+
+<script src="portal.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id)
+  const msg = (t, c) => { const m = $('msg'); m.className = 'msg ' + c; m.textContent = t }
+  $('pass').addEventListener('input', () => {
+    const p = $('pass').value; let s = 0
+    if (p.length >= 8) s++; if (/[A-Z]/.test(p) && /[a-z]/.test(p)) s++; if (/\d/.test(p)) s++; if (/[^A-Za-z0-9]/.test(p)) s++
+    const el = $('meter'); el.style.width = [0,25,50,75,100][s] + '%'
+    el.style.background = ['#dc2657','#dc2657','#d98324','#caa500','#0f9d6b'][s]
+  })
+  async function submit() {
+    const nama = $('nama').value.trim(), email = $('email').value.trim().toLowerCase()
+    const pass = $('pass').value, pass2 = $('pass2').value
+    if (nama.length < 2) return msg('Masukkan nama lengkap.', 'err')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('Email tidak valid.', 'err')
+    if (pass.length < 8) return msg('Password minimal 8 karakter.', 'err')
+    if (pass !== pass2) return msg('Password tidak sama.', 'err')
+    $('btn').disabled = true; $('btn').innerHTML = '<span class="spin"></span> Memproses…'
+    const r = await api('/api/register', { method: 'POST', body: { name: nama, email, password: pass } })
+    $('btn').disabled = false; $('btn').textContent = 'Daftar'
+    if (r.ok) {
+      $('form').innerHTML = '<div style="text-align:center"><div style="font-size:46px">✉️</div>' +
+        '<h2 style="font-size:19px;margin:8px 0">Cek email Anda</h2>' +
+        '<p style="color:var(--muted);font-size:14px">Kami mengirim tautan verifikasi ke <b>' + email + '</b>. ' +
+        'Klik tautan itu untuk mengaktifkan akun, lalu masuk.</p>' +
+        '<a class="btn" style="margin-top:16px;text-decoration:none" href="masuk.html">Ke halaman Masuk</a>' +
+        '<p class="note">Tidak ada email? Cek folder spam.</p></div>'
+      $('msg').className = 'msg'
+    } else {
+      msg(r.data.error || 'Gagal mendaftar. Coba lagi.', 'err')
+    }
+  }
+  $('btn').addEventListener('click', submit)
+  $('pass2').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit() })
+</script>
+</body></html>

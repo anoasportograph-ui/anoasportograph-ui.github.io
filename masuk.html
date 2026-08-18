@@ -1,0 +1,40 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Masuk — Anoa's Uploader</title>
+<link rel="stylesheet" href="portal.css">
+</head><body>
+<header><div class="bar"><a class="brand" data-logo href="index.html"></a><span class="sp"></span>
+  <a href="daftar.html" style="font-size:13.5px;font-weight:600;color:var(--muted)">Daftar</a></div></header>
+
+<div class="authwrap">
+  <div class="card">
+    <h1>Masuk</h1>
+    <p class="sub">Masuk untuk mengakses unduhan Anda.</p>
+    <div id="msg" class="msg"></div>
+    <div class="field"><label>Email</label><input id="email" type="email" placeholder="email@contoh.com" autocomplete="email"></div>
+    <div class="field"><label>Password</label><input id="pass" type="password" placeholder="Password Anda" autocomplete="current-password"></div>
+    <button class="btn" id="btn">Masuk</button>
+    <p class="alt">Belum punya akun? <a href="daftar.html">Daftar</a></p>
+  </div>
+</div>
+
+<script src="portal.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id)
+  const msg = (t, c) => { const m = $('msg'); m.className = 'msg ' + c; m.textContent = t }
+  // sudah login? langsung ke area anggota
+  if (getToken()) location.replace('anggota.html')
+  async function submit() {
+    const email = $('email').value.trim().toLowerCase(), pass = $('pass').value
+    if (!email || !pass) return msg('Isi email & password.', 'err')
+    $('btn').disabled = true; $('btn').innerHTML = '<span class="spin"></span> Masuk…'
+    const r = await api('/api/login', { method: 'POST', body: { email, password: pass } })
+    if (r.ok && r.data.token) { setToken(r.data.token); location.replace('anggota.html'); return }
+    $('btn').disabled = false; $('btn').textContent = 'Masuk'
+    msg(r.data.error || 'Gagal masuk.', 'err')
+  }
+  $('btn').addEventListener('click', submit)
+  $('pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit() })
+</script>
+</body></html>
