@@ -26,4 +26,22 @@ async function api(path, { method = 'GET', body, auth = false } = {}) {
 function mountBrand() {
   document.querySelectorAll('.brand[data-logo]').forEach((el) => { el.innerHTML = U2 + ' Anoa\'s Uploader' })
 }
-document.addEventListener('DOMContentLoaded', mountBrand)
+
+// penghitung kunjungan → isi elemen #visit-counter (increment sekali per sesi)
+const _MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+async function mountVisits() {
+  const el = document.getElementById('visit-counter')
+  if (!el) return
+  try {
+    const inc = !sessionStorage.getItem('au_visited')
+    const r = await fetch(API + (inc ? '/api/visit' : '/api/visits'), inc ? { method: 'POST' } : {})
+    if (inc) sessionStorage.setItem('au_visited', '1')
+    const d = await r.json()
+    const [y, mo, dd] = d.day.split('-')
+    el.innerHTML = '📊 ' + parseInt(dd) + ' ' + _MONTHS[parseInt(mo) - 1] + ' ' + y +
+      ' · <b>' + d.total.toLocaleString('id-ID') + '</b> kunjungan' +
+      ' · <span style="opacity:.7">hari ini ' + d.today.toLocaleString('id-ID') + '</span>'
+  } catch (e) { /* diam */ }
+}
+
+document.addEventListener('DOMContentLoaded', () => { mountBrand(); mountVisits() })
