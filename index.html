@@ -415,5 +415,13 @@
     }
   })();
 </script>
+<script src="portal.js"></script>
+<script>
+  if (typeof getToken==="function" && getToken()) {
+    document.querySelectorAll(String.fromCharCode(97)+"[href=\"daftar.html\"],a[href=\"masuk.html\"]").forEach(a=>a.href="anggota.html");
+    const b=document.querySelectorAll(".nav-links a.btn");
+    if(b.length>=2){b[0].textContent="Area Anggota";b[0].href="anggota.html";b[0].className="btn btn-primary";b[1].remove();}
+  }
+</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="{&quot;token&quot;: &quot;b5d6ee9f82124d56aa0aa9630cfde5c1&quot;}"></script>
 </html>
