@@ -14,12 +14,14 @@
     <div id="msg" class="msg"></div>
     <div class="field"><label>Email</label><input id="email" type="email" placeholder="email@contoh.com" autocomplete="email"></div>
     <div class="field"><label>Password</label><input id="pass" type="password" placeholder="Password Anda" autocomplete="current-password"></div>
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAAEWacKv27or6BUWS" data-action="login" style="margin:2px 0 10px"></div>
     <button class="btn" id="btn">Masuk</button>
     <p class="alt">Belum punya akun? <a href="daftar.html">Daftar</a></p>
   </div>
 </div>
 
 <script src="portal.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
   const $ = (id) => document.getElementById(id)
   const msg = (t, c) => { const m = $('msg'); m.className = 'msg ' + c; m.textContent = t }
@@ -28,9 +30,12 @@
   async function submit() {
     const email = $('email').value.trim().toLowerCase(), pass = $('pass').value
     if (!email || !pass) return msg('Isi email & password.', 'err')
+    const tsToken = window.turnstile ? turnstile.getResponse() : ''
+    if (!tsToken) return msg('Selesaikan verifikasi keamanan dulu.', 'err')
     $('btn').disabled = true; $('btn').innerHTML = '<span class="spin"></span> Masuk…'
-    const r = await api('/api/login', { method: 'POST', body: { email, password: pass } })
+    const r = await api('/api/login', { method: 'POST', body: { email, password: pass, turnstile: tsToken } })
     if (r.ok && r.data.token) { setToken(r.data.token); location.replace('anggota.html'); return }
+    if (window.turnstile) turnstile.reset()
     $('btn').disabled = false; $('btn').textContent = 'Masuk'
     msg(r.data.error || 'Gagal masuk.', 'err')
   }

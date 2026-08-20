@@ -20,6 +20,7 @@
           <div class="meter"><i id="meter"></i></div></div>
         <div class="field"><label>Ulangi password</label><input id="pass2" type="password" placeholder="Ketik ulang" autocomplete="new-password"></div>
       </div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEWacKv27or6BUWS" data-action="signup" style="margin:2px 0 10px"></div>
       <button class="btn" id="btn">Daftar</button>
       <p class="alt">Sudah punya akun? <a href="masuk.html">Masuk</a></p>
     </div>
@@ -28,6 +29,7 @@
 </div>
 
 <script src="portal.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
   const $ = (id) => document.getElementById(id)
   const msg = (t, c) => { const m = $('msg'); m.className = 'msg ' + c; m.textContent = t }
@@ -44,8 +46,11 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('Email tidak valid.', 'err')
     if (pass.length < 8) return msg('Password minimal 8 karakter.', 'err')
     if (pass !== pass2) return msg('Password tidak sama.', 'err')
+    const tsToken = window.turnstile ? turnstile.getResponse() : ''
+    if (!tsToken) return msg('Selesaikan verifikasi keamanan dulu.', 'err')
     $('btn').disabled = true; $('btn').innerHTML = '<span class="spin"></span> Memproses…'
-    const r = await api('/api/register', { method: 'POST', body: { name: nama, email, password: pass } })
+    const r = await api('/api/register', { method: 'POST', body: { name: nama, email, password: pass, turnstile: tsToken } })
+    if (window.turnstile) turnstile.reset()
     $('btn').disabled = false; $('btn').textContent = 'Daftar'
     if (r.ok) {
       $('form').innerHTML = '<div style="text-align:center"><div style="font-size:46px">✉️</div>' +
