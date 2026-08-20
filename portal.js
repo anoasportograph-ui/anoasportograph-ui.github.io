@@ -44,4 +44,20 @@ async function mountVisits() {
   } catch (e) { /* diam */ }
 }
 
-document.addEventListener('DOMContentLoaded', () => { mountBrand(); mountVisits() })
+// odometer total file sepanjang masa (dari AU CC via Worker) → isi #odo-counter.
+// Kalau belum ada data (0) atau gagal, biarkan angka placeholder di HTML.
+async function mountOdometer() {
+  const el = document.getElementById('odo-counter')
+  if (!el) return
+  try {
+    const r = await fetch(API + '/api/odometer')
+    const d = await r.json()
+    if (d && d.total > 0) {
+      el.textContent = d.total.toLocaleString('id-ID') + '+'
+      const lab = document.getElementById('odo-label')
+      if (lab) lab.textContent = 'foto sudah diunggah'
+    }
+  } catch (e) { /* diam → pakai placeholder */ }
+}
+
+document.addEventListener('DOMContentLoaded', () => { mountBrand(); mountVisits(); mountOdometer() })
