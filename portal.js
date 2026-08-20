@@ -45,19 +45,38 @@ async function mountVisits() {
 }
 
 // odometer total file sepanjang masa (dari AU CC via Worker) → isi #odo-counter.
+// Auto-refresh tiap 45 dtk + animasi hitung-naik biar terasa hidup tanpa reload.
 // Kalau belum ada data (0) atau gagal, biarkan angka placeholder di HTML.
-async function mountOdometer() {
+let _odoCur = 0
+function _animateOdo(el, to) {
+  const from = _odoCur || to // muat pertama: langsung set (tanpa lompat dari 0)
+  const dur = 900, t0 = performance.now()
+  function tick(now) {
+    const k = Math.min(1, (now - t0) / dur)
+    const v = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))
+    el.textContent = v.toLocaleString('id-ID') + '+'
+    if (k < 1) requestAnimationFrame(tick)
+    else _odoCur = to
+  }
+  requestAnimationFrame(tick)
+}
+async function _fetchOdo() {
   const el = document.getElementById('odo-counter')
   if (!el) return
   try {
     const r = await fetch(API + '/api/odometer')
     const d = await r.json()
-    if (d && d.total > 0) {
-      el.textContent = d.total.toLocaleString('id-ID') + '+'
+    if (d && d.total > 0 && d.total !== _odoCur) {
+      _animateOdo(el, d.total)
       const lab = document.getElementById('odo-label')
       if (lab) lab.textContent = 'foto sudah diunggah'
     }
   } catch (e) { /* diam → pakai placeholder */ }
+}
+function mountOdometer() {
+  if (!document.getElementById('odo-counter')) return
+  _fetchOdo()
+  setInterval(_fetchOdo, 45000)
 }
 
 document.addEventListener('DOMContentLoaded', () => { mountBrand(); mountVisits(); mountOdometer() })
